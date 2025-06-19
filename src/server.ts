@@ -6,7 +6,7 @@ dotenv.config()
 import mongoose from 'mongoose'
 import app from './app'
 
-const PORT = process.env.PORT || 6000
+const PORT = process.env.PORT || 3010
 
 const mongoUri = process.env.MONGODB_URL
 if (!mongoUri) {
