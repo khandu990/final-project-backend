@@ -1,30 +1,23 @@
-# Stage 1: Build the React app
-FROM node:18-alpine AS build
+# Use official Node.js LTS image as base
+FROM node:18-alpine
 
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package.json package-lock.json* yarn.lock* ./
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./
 
+# Install dependencies (only production dependencies if you want)
 RUN npm install
-# or if you use yarn, replace with: RUN yarn install
 
-# Copy the rest of your app source code
+# Copy all project files into the container
 COPY . .
 
-# Build the production version of the app
+# Build the TypeScript code
 RUN npm run build
-# or with yarn: RUN yarn build
 
-# Stage 2: Serve the built app with a lightweight web server
-FROM nginx:alpine
+# Expose the port your app listens on
+EXPOSE 3000
 
-# Copy built files from previous stage to nginx www folder
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Remove default nginx config if needed, then add your own (optional)
-# COPY nginx.conf /etc/nginx/nginx.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Command to run your app
+CMD ["node", "dist/server.js"]
